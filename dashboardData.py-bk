@@ -1,0 +1,60 @@
+#############################
+#
+#  Python script to generate json file required for the creation of the AWS dashboard.
+#  Script uses YAML file to generate json file.
+#
+############################
+
+#!/usr/local/bin/python
+
+# Required Modules
+
+import yaml
+import json
+import sys
+import os
+
+# Assigning variables from the cmd line input
+
+inFile = sys.argv[1]
+outputFile = inFile.split(".")[0]+".json"
+
+# File read operation
+
+f = open(inFile)
+alb = yaml.safe_load(f)
+f.close()
+
+# Initializing Empty List
+widget_list = list()
+
+# Looping through YAML file 
+for resource, values in alb.iteritems():
+    for resource_type, metrics in values.iteritems():
+	for metric_name, resource_names in metrics.iteritems():
+	    if type(resource_names) == dict:
+		for resource_name, metric_names in resource_names.iteritems():
+		    b = list()
+		    for metric_Name in metric_names:
+			b.append([resource, metric_Name, resource_type, resource_name])
+		    widget_json={"type":"metric","x":0,"y":0,"width":24,"height":6,"properties":{"metrics":b,"period":300,"stat":"Average","region":"us-east-1","title":resource+" "+metric_name}}
+		    widget_list.append(widget_json)
+	    else:
+		b = list()
+		for resource_name in resource_names:
+		    b.append([resource, metric_name, resource_type, resource_name])
+		widget_json={"type":"metric","x":0,"y":0,"width":24,"height":6,"properties":{"metrics":b,"period":300,"stat":"Average","region":"us-east-1","title":resource+" "+metric_name}}
+		widget_list.append(widget_json)
+ 
+widget_list = {"widgets":widget_list}
+#print widget_list
+
+if os.path.isfile("../%s" % outputFile):
+    print "File Present"
+
+# File writing operarion 
+#with open(outputFile, "w") as outfile:
+#    json.dump(widget_list, outfile, indent=4, sort_keys=True)
+
+# Output the json for terraform
+#print json.dumps({"filename":outputFile})
