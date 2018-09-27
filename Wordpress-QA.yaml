@@ -1,0 +1,39 @@
+AWS/ApplicationELB:
+ LoadBalancer:
+  HTTP_Count_2XX_4XX_5XX:
+   app/<ELB-Name>:
+   - HTTPCode_Target_2XX_Count
+   - HTTPCode_Target_4XX_Count
+   - HTTPCode_Target_5XX_Count
+  HTTPCode_Target_3XX_Count:
+   - app/<ELB-Name>
+  TargetResponseTime:
+   - app/<ELB-Name>
+AWS/RDS:
+ DBInstanceIdentifier:
+   CPUUtilization:
+   - <RDS-Instance>
+   FreeableMemory:
+   - <RDS-Instance>
+   DatabaseConnections:
+   - <RDS-Instance>
+   NetworkReceiveThroughput:
+   - <RDS-Instance>
+   NetworkTransmitThroughput:
+   - <RDS-Instance>
+AWS/ElastiCache:
+ CacheClusterId:
+   CurrConnections:
+   - <Elastic-cache-instance>
+   CurrItems:
+   - <Elastic-cache-instance>
+   FreeableMemory:
+   - <Elastic-cache-instance>
+   CPUUtilization:
+   - <Elastic-cache-instance>
+   Evictions:
+   - <Elastic-cache-instance>
+   Packet_IN_OUT:
+    <Elastic-cache-instance>:
+    - NetworkPacketsIn
+    - NetworkPacketsOut
